@@ -23,7 +23,7 @@ print(clusters_)
 print(len(clusters_))
 print("------------")
 
-itemsets, rules = apriori(clusters_, min_support=1E-4, min_confidence=1E-4)
+itemsets, rules = apriori(clusters_, min_support=1E-2, min_confidence=1E-2)
 # print(rules)
 print(len(rules))
 print("------------")

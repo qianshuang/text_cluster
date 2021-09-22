@@ -35,29 +35,26 @@ for i in clusters_:
     if len(i) >= 2 and set(i) not in clusters__:
         clusters__.append(set(i))
 clusters_ = clusters__
+print(len(clusters_))
 
 itemsets, rules = apriori(clusters_, min_support=1E-4, min_confidence=1E-4)
-# print(itemsets)
 clusters_ = []
 for rule in rules:
     u_set = set(rule.lhs).union(set(rule.rhs))
     if u_set not in clusters_:
         clusters_.append(u_set)
-# print(clusters_)
-# print(len(clusters_))
+print(len(clusters_))
 
 # 融合
-for i in range(len(clusters_)):
-    if i >= len(clusters_) - 2:
-        break
+for i in range(len(clusters_) - 1):
     i_0 = clusters_[i]
-
     for j in range(i + 1, len(clusters_)):
         i_1 = clusters_[j]
-        if len(i_0.intersection(i_1)) >= len(i_1) / 3:
-            clusters_[j] = i_0.union(i_1)
-            clusters_[i] = {}
+        if len(i_0.intersection(i_1)) >= len(i_1) / 3:  # 交集超过1/3就融合
+            clusters_[i] = i_0.union(i_1)
+            clusters_[j] = {}
 
-clusters_ = [i for i in clusters_ if i != {}]
-print(clusters_)
-print(len(clusters_))
+communities = [i for i in clusters_ if i != {}]
+print(len(communities))
+communities = sorted(communities, key=lambda b: -len(b))  # 从大到小排序
+write_res("res_main", communities, pure_questions, 6)
