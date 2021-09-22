@@ -3,6 +3,7 @@
 import numpy as np
 from efficient_apriori import apriori
 import time
+import itertools
 
 # from bert_serving.client import BertClient
 # from common import *
@@ -54,4 +55,4 @@ import time
 # for c in nx.connected_components(G):
 #     print(c)
 
-print({2, 1} in [{1, 2}, {3, 4}])
+print(list(itertools.combinations([1, 2], 2)))

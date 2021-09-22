@@ -11,6 +11,7 @@ with open_file("data/pure_questions.txt") as f:
 
 clusters_ = np.load("data/cluster_metric.npy", allow_pickle=True)
 print(clusters_)
+print(len(clusters_))
 print("------------")
 
 clusters__ = []
@@ -19,10 +20,12 @@ for i in clusters_:
         clusters__.append(set(i))
 clusters_ = clusters__
 print(clusters_)
+print(len(clusters_))
 print("------------")
 
 itemsets, rules = apriori(clusters_, min_support=1E-4, min_confidence=1E-4)
-print(rules)
+# print(rules)
+print(len(rules))
 print("------------")
 
 # 融合：最大连通图
