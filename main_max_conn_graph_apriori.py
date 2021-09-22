@@ -30,18 +30,19 @@ print("------------")
 
 # 融合：最大连通图
 G = nx.Graph()
-clusters_ = []
 for rule in rules:
     l_ = list(rule.lhs)
     r_ = list(rule.rhs)
-    for i in list(itertools.combinations(l_, 2)):
-        G.add_edge(list(i)[0], list(i)[1])
-    for i in list(itertools.combinations(r_, 2)):
-        G.add_edge(list(i)[0], list(i)[1])
-    G.add_edge(l_[0], r_[0])
-communities = nx.connected_components(G)
-print(communities)
+    # for i in list(itertools.combinations(l_, 2)):
+    #     G.add_edge(list(i)[0], list(i)[1])
+    # for i in list(itertools.combinations(r_, 2)):
+    #     G.add_edge(list(i)[0], list(i)[1])
+    for i in range(len(l_) - 1):
+        G.add_edge(l_[i], l_[i + 1])
+    for i in range(len(r_) - 1):
+        G.add_edge(r_[i], r_[i + 1])
+    G.add_edge(l_[len(l_) - 1], r_[0])
 
-# 按照社区大小从大到小排序输出
-communities = sorted(clusters_, key=lambda b: -len(b))
+communities = nx.connected_components(G)
+communities = sorted(communities, key=lambda b: -len(b))
 write_res("res_max_conn_graph_apriori", communities, pure_questions, 2)
