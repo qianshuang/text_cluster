@@ -35,15 +35,21 @@ for i in clusters_:
     if len(i) >= 2 and set(i) not in clusters__:
         clusters__.append(set(i))
 clusters_ = clusters__
-print(len(clusters_))
+print("clusters_: ", len(clusters_))
 
-itemsets, rules = apriori(clusters_, min_support=1E-4, min_confidence=1E-4)
+itemsets, rules = apriori(clusters_, min_support=1E-3, min_confidence=1E-3)
+print("rules: ", len(rules))
+
 clusters_ = []
-for rule in rules:
+for i in range(len(rules)):
+    if i % 10000 == 0:
+        print(i, " is processing...")
+
+    rule = rules[i]
     u_set = set(rule.lhs).union(set(rule.rhs))
     if u_set not in clusters_:
         clusters_.append(u_set)
-print(len(clusters_))
+print("clusters_: ", len(clusters_))
 
 # 融合
 for i in range(len(clusters_) - 1):
@@ -55,6 +61,6 @@ for i in range(len(clusters_) - 1):
             clusters_[j] = {}
 
 communities = [i for i in clusters_ if i != {}]
-print(len(communities))
+print("communities", len(communities))
 communities = sorted(communities, key=lambda b: -len(b))  # 从大到小排序
-write_res("res_main", communities, pure_questions, 6)
+write_res("res_main", communities, pure_questions, 2)
