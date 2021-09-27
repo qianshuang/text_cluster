@@ -37,25 +37,32 @@ for i in clusters_:
 clusters_ = clusters__
 print("clusters_: ", len(clusters_))
 
-itemsets, rules = apriori(clusters_, min_support=1E-3, min_confidence=1E-3)
+itemsets, rules = apriori(clusters_, min_support=1E-2, min_confidence=1E-2)
 print("rules: ", len(rules))
 
 clusters_ = []
 for i in range(len(rules)):
-    if i % 10000 == 0:
-        print(i, " is processing...")
+    # if i % 1000000 == 0:
+    #     print(i, " is unioning...")
 
     rule = rules[i]
     u_set = set(rule.lhs).union(set(rule.rhs))
-    if u_set not in clusters_:
+    clusters_.append(u_set)
+    if u_set not in clusters_:  # 过于耗时
         clusters_.append(u_set)
 print("clusters_: ", len(clusters_))
 
 # 融合
 for i in range(len(clusters_) - 1):
+    # if i % 1000 == 0:
+    #     print(i, " is processing...")
     i_0 = clusters_[i]
+    if i_0 == {}:
+        continue
     for j in range(i + 1, len(clusters_)):
         i_1 = clusters_[j]
+        if i_1 == {}:
+            continue
         if len(i_0.intersection(i_1)) >= len(i_1) / 3:  # 交集超过1/3就融合
             clusters_[i] = i_0.union(i_1)
             clusters_[j] = {}

@@ -25,7 +25,7 @@ def process_ori_data():
         # 3. 分词
         tokens = nltk.word_tokenize(remove_punc)
         # 4. 去除停用词
-        remove_sw = [w for w in tokens if not w in stopwords.words('english')]
+        remove_sw = [w for w in tokens if w not in stopwords.words('english')]
 
         if len(remove_sw) >= 5 and len(tokens) <= 25:
             final_lines.append(line)
@@ -45,6 +45,6 @@ def sent_to_vec():
     np.save("data/questions_vecs", bert_vecs)
 
 
-process_ori_data()
-bc = BertClient()
-# sent_to_vec()
+# process_ori_data()
+# bc = BertClient()
+sent_to_vec()

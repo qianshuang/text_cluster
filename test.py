@@ -55,4 +55,4 @@ import itertools
 # for c in nx.connected_components(G):
 #     print(c)
 
-print(list(itertools.combinations([1, 2], 2)))
+print("start k-means cluster for", 5, "...")
