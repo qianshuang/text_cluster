@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 from common import *
 import string
 from nltk.corpus import stopwords
+from sklearn import metrics
 
 tv = TfidfVectorizer()
 stemmer = SnowballStemmer("english")
@@ -36,13 +37,15 @@ for i in range(len(lines)):
 tv_fit = tv.fit_transform(final_lines)
 tfidf_arr = tv_fit.toarray()
 
+# TODO PCA
+
 best_k = 0
 best_scr = 0
 best_res = []
 for i in range(5, 100):
     print("start k-means cluster for", i, "...")
     kmeans = KMeans(n_clusters=i).fit(tfidf_arr)
-    score = metrics.calinski_harabaz_score(tfidf_arr, kmeans.predict(tfidf_arr))
+    score = metrics.calinski_harabasz_score(tfidf_arr, kmeans.predict(tfidf_arr))
     if score > best_scr:
         best_k = i
         best_scr = score
