@@ -37,12 +37,17 @@ for i in range(len(lines)):
 tv_fit = tv.fit_transform(final_lines)
 tfidf_arr = tv_fit.toarray()
 
-# TODO PCA
+# TODO: PCA
 
+max_steps_without_improve = 5
 best_k = 0
 best_scr = 0
 best_res = []
 for i in range(5, 100):
+    # early stopping
+    if i - best_k >= max_steps_without_improve:
+        break
+
     print("start k-means cluster for", i, "...")
     kmeans = KMeans(n_clusters=i).fit(tfidf_arr)
     score = metrics.calinski_harabasz_score(tfidf_arr, kmeans.predict(tfidf_arr))
@@ -50,6 +55,7 @@ for i in range(5, 100):
         best_k = i
         best_scr = score
         best_res = kmeans.labels_  # 返回所有簇id
+    print("score:", score)
 
 print("best_k:", best_k)
 print("best_scr:", best_scr)
