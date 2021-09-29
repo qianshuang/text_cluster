@@ -1,49 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import nltk
-from nltk.stem import SnowballStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from common import *
-import string
-from nltk.corpus import stopwords
 from sklearn import metrics
 
-tv = TfidfVectorizer()
-stemmer = SnowballStemmer("english")
-
-with open_file("data/pure_questions.txt") as f:
-    lines = f.readlines()
-print(len(lines))
-
-final_lines = []
-for i in range(len(lines)):
-    if i % 1000 == 0:
-        print(str(i) + " is processing...")
-    line = lines[i]
-
-    # 1. 转小写
-    lower = line.strip().lower()
-    # 2. 去标点
-    remove_punc = lower.translate(str.maketrans("", "", string.punctuation))
-    # 3. 分词
-    tokens = nltk.word_tokenize(remove_punc)
-    # 4. 去除停用词
-    remove_sw = [w for w in tokens if w not in stopwords.words('english')]
-    # 5. 次干提取
-    stemmed = [stemmer.stem(w) for w in remove_sw]
-    final_lines.append(" ".join(stemmed))
-
-tv_fit = tv.fit_transform(final_lines)
-tfidf_arr = tv_fit.toarray()
-
-# TODO: PCA
+tfidf_arr = np.load("data/tfidf_arr.npy", allow_pickle=True)
 
 max_steps_without_improve = 5
-best_k = 0
+best_k = 200
 best_scr = 0
 best_res = []
-for i in range(5, 100):
+for i in range(200, 300):
     # early stopping
     if i - best_k >= max_steps_without_improve:
         break
