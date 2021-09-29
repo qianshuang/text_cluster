@@ -4,13 +4,15 @@ from sklearn.cluster import KMeans
 from common import *
 from sklearn import metrics
 
+with open_file("data/pure_questions.txt") as f:
+    lines = f.readlines()
 tfidf_arr = np.load("data/tfidf_arr.npy", allow_pickle=True)
 
 max_steps_without_improve = 5
-best_k = 200
+best_k = 250
 best_scr = 0
 best_res = []
-for i in range(200, 300):
+for i in range(250, 251):
     # early stopping
     if i - best_k >= max_steps_without_improve:
         break

@@ -48,7 +48,7 @@ def sent_to_vec():
 
 
 def get_tfidf_arr():
-    tv = TfidfVectorizer()
+    tv = TfidfVectorizer(min_df=2)
     stemmer = SnowballStemmer("english")
 
     with open_file("data/pure_questions.txt") as f:
@@ -75,11 +75,24 @@ def get_tfidf_arr():
 
     tv_fit = tv.fit_transform(final_lines)
     tfidf_arr = tv_fit.toarray()
+    print(tfidf_arr.shape)
     # TODO: PCA
     np.save("data/tfidf_arr", tfidf_arr)
+
+
+def get_train_test():
+    lines_ = []
+    with open_file("data/cluster_result.txt") as f:
+        lines = f.readlines()
+    print(len(lines))
+    for line in lines:
+        label, _, query, _ = line.strip().lower().split("\t")
+        lines_.append(label + "\t" + query + "\n")
+    random_sample(lines_)
 
 
 # process_ori_data()
 # bc = BertClient()
 # sent_to_vec()
-get_tfidf_arr()
+# get_tfidf_arr()
+get_train_test()

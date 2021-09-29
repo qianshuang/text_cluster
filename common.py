@@ -3,6 +3,7 @@
 import heapq
 import os
 import numpy as np
+import random
 
 
 def open_file(filename, mode='r'):
@@ -44,3 +45,16 @@ def write_res(dir_name, clusters, pure_questions, cnt_threshold):
         file_w = open_file(dir_name + "/" + str(i) + ".txt", mode="w")
         for j in cs:
             file_w.write(pure_questions[j])
+
+
+def random_sample(lines, fraction=0.1):
+    random.shuffle(lines)
+    len_test = int(len(lines) * fraction)
+    lines_test = lines[0:len_test]
+    lines_train = lines[len_test:]
+    train_w = open_file("data/train.txt", mode="w")
+    test_w = open_file("data/test.txt", mode="w")
+    for i in lines_train:
+        train_w.write(i)
+    for j in lines_test:
+        test_w.write(j)

@@ -55,4 +55,5 @@ import itertools
 # for c in nx.connected_components(G):
 #     print(c)
 
-print("start k-means cluster for", 5, "...")
+tfidf_arr = np.load("data/tfidf_arr.npy", allow_pickle=True)
+print(tfidf_arr.shape)
