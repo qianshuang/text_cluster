@@ -7,6 +7,8 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
+import json
+import re
 
 
 def process_ori_data():
@@ -80,19 +82,51 @@ def get_tfidf_arr():
     np.save("data/tfidf_arr", tfidf_arr)
 
 
-def get_train_test():
+def get_bert_train_test():
     lines_ = []
-    with open_file("data/cluster_result.txt") as f:
+    with open_file("data/all_result.txt") as f:
         lines = f.readlines()
     print(len(lines))
     for line in lines:
-        label, _, query, _ = line.strip().lower().split("\t")
+        if len(line.strip().split("\t")) == 4:
+            label, _, query, _ = line.strip().lower().split("\t")
+        else:
+            label, query = line.strip().lower().split("\t")
         lines_.append(label + "\t" + query + "\n")
     random_sample(lines_)
+
+
+def get_bert_sent_vec():
+    bv_res = []
+
+    lines = read_file("data/bert_vecs.txt")
+    for line in lines:
+        jl = json.loads(line)
+        bv = [lv["values"] for lv in jl["features"][0]["layers"]]
+        bv_mean = np.mean(bv, axis=0).tolist()
+        bv_res.append(bv_mean)
+
+    print(len(bv_res))
+    print(bv_res[0])
+
+    np.save("data/bert_arr", bv_res)
+
+
+def process_bank_ori_data():
+    new_lines = []
+    clz_ori = "".join(open("data/bank_ori_data.txt").readlines()).split("\"\n\"")
+    for i in range(len(clz_ori)):
+        label = 366 + i
+        for q in re.split("\\||\n", clz_ori[i]):
+            if q.strip() != "":
+                new_lines.append(str(label) + "\t" + q.strip())
+    write_lines("data/bank_result.txt", new_lines)
 
 
 # process_ori_data()
 # bc = BertClient()
 # sent_to_vec()
 # get_tfidf_arr()
-get_train_test()
+get_bert_train_test()
+# get_bert_sent_vec()
+# process_bank_ori_data()

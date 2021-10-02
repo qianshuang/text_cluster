@@ -55,5 +55,4 @@ import itertools
 # for c in nx.connected_components(G):
 #     print(c)
 
-tfidf_arr = np.load("data/tfidf_arr.npy", allow_pickle=True)
-print(tfidf_arr.shape)
+print([str(i) for i in range(366)])

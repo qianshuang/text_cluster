@@ -6,7 +6,7 @@ from sklearn import metrics
 
 with open_file("data/pure_questions.txt") as f:
     lines = f.readlines()
-tfidf_arr = np.load("data/tfidf_arr.npy", allow_pickle=True)
+bert_arr = np.load("data/tfidf_arr.npy", allow_pickle=True)
 
 max_steps_without_improve = 5
 best_k = 250
@@ -18,8 +18,8 @@ for i in range(250, 251):
         break
 
     print("start k-means cluster for", i, "...")
-    kmeans = KMeans(n_clusters=i).fit(tfidf_arr)
-    score = metrics.calinski_harabasz_score(tfidf_arr, kmeans.predict(tfidf_arr))
+    kmeans = KMeans(n_clusters=i).fit(bert_arr)
+    score = metrics.calinski_harabasz_score(bert_arr, kmeans.predict(bert_arr))
     if score > best_scr:
         best_k = i
         best_scr = score

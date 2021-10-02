@@ -58,3 +58,9 @@ def random_sample(lines, fraction=0.1):
         train_w.write(i)
     for j in lines_test:
         test_w.write(j)
+
+
+def write_lines(filename, list_res):
+    test_w = open_file(filename, mode="w")
+    for j in list_res:
+        test_w.write(j + "\n")
