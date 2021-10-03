@@ -55,6 +55,7 @@ import itertools
 # for c in nx.connected_components(G):
 #     print(c)
 
-communities = [[1, 2], [3, 4, 5]]
-communities = sorted(communities, key=lambda b: -len(b))  # 从大到小排序
-print(communities)
+from sklearn.metrics.pairwise import cosine_similarity
+
+a1 = np.arange(15).reshape(3, 5)
+print(cosine_similarity(a1))
