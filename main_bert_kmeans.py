@@ -34,4 +34,5 @@ for k in range(best_k):
     ids = [i for i, x in enumerate(best_res) if x == k]
     clusters.append(ids)
 
-write_res("res_bert", clusters, lines, 5)
+communities = sorted(clusters, key=lambda b: -len(b))  # 从大到小排序
+write_res("res_bert", communities, lines, 5)

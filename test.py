@@ -55,4 +55,6 @@ import itertools
 # for c in nx.connected_components(G):
 #     print(c)
 
-print([str(i) for i in range(366)])
+communities = [[1, 2], [3, 4, 5]]
+communities = sorted(communities, key=lambda b: -len(b))  # 从大到小排序
+print(communities)

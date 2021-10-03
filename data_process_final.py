@@ -100,7 +100,9 @@ def get_bert_sent_vec():
     bv_res = []
 
     lines = read_file("data/bert_vecs.txt")
-    for line in lines:
+    for i in range(len(lines)):
+        line = lines[i]
+
         jl = json.loads(line)
         bv = [lv["values"] for lv in jl["features"][0]["layers"]]
         bv_mean = np.mean(bv, axis=0).tolist()
@@ -108,6 +110,7 @@ def get_bert_sent_vec():
 
     print(len(bv_res))
     print(bv_res[0])
+    print(len(bv_res[0]))
 
     np.save("data/bert_arr", bv_res)
 
@@ -127,6 +130,6 @@ def process_bank_ori_data():
 # bc = BertClient()
 # sent_to_vec()
 # get_tfidf_arr()
-get_bert_train_test()
-# get_bert_sent_vec()
+# get_bert_train_test()
+get_bert_sent_vec()
 # process_bank_ori_data()

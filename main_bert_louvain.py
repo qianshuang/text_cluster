@@ -12,7 +12,8 @@ with open_file("data/pure_questions.txt") as f:
 G_ = collections.defaultdict(dict)
 
 for i in range(len(questions_vecs)):
-    print(i, " is processing...")
+    if i % 100 == 0:
+        print(i, "is processing...")
     vi = questions_vecs[i]
     for j in range(i + 1, len(questions_vecs)):
         vj = questions_vecs[j]
