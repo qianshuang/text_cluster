@@ -17,7 +17,7 @@ cos_simi_m = cosine_similarity(questions_vecs)
 
 print("graph building...")
 for i in range(len(questions_vecs)):
-    if i % 100 == 0:
+    if i % 1000 == 0:
         print(i, "is processing...")
 
     for j in range(i + 1, len(questions_vecs)):
@@ -25,8 +25,10 @@ for i in range(len(questions_vecs)):
             G_[i][j] = cos_simi_m[i][j]
             G_[j][i] = cos_simi_m[j][i]
 
-print("Louvain computing...")
+print("Louvain building...")
 algorithm = Louvain(G_)
+
+print("Louvain computing...")
 communities = algorithm.execute()
 
 # 按照社区大小从大到小排序输出

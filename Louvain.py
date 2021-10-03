@@ -42,10 +42,16 @@ class Louvain:
                             if neighbor > vid])
 
     def first_stage(self):
+        print("first stage...")
         mod_inc = False  # 用于判断算法是否可终止
         visit_sequence = self._G.keys()
         random.shuffle(list(visit_sequence))
+
+        it_ = 0
         while True:
+            print("fs:", it_)
+            it_ = it_ + 1
+
             can_stop = True  # 第一阶段是否可终止
             for v_vid in visit_sequence:
                 v_cid = self._vid_vertex[v_vid]._cid
@@ -81,6 +87,7 @@ class Louvain:
         return mod_inc
 
     def second_stage(self):
+        print("second stage...")
         cid_vertices = {}
         vid_vertex = {}
         for cid, vertices in self._cid_vertices.items():
@@ -129,6 +136,7 @@ class Louvain:
     def execute(self):
         iter_time = 1
         while True:
+            print("iterator:", iter_time)
             iter_time += 1
             mod_inc = self.first_stage()
             if mod_inc:
