@@ -84,14 +84,17 @@ def get_tfidf_arr():
 
 def get_bert_train_test():
     lines_ = []
-    with open_file("data/all_result.txt") as f:
+    with open_file("data/ite_bank_result.txt") as f:
         lines = f.readlines()
     print(len(lines))
     for line in lines:
         if len(line.strip().split("\t")) == 4:
             label, _, query, _ = line.strip().lower().split("\t")
-        else:
+        elif len(line.strip().split("\t")) == 2:
             label, query = line.strip().lower().split("\t")
+        else:
+            print(line)
+            continue
         lines_.append(label + "\t" + query + "\n")
     random_sample(lines_)
 
@@ -126,10 +129,24 @@ def process_bank_ori_data():
     write_lines("data/bank_result.txt", new_lines)
 
 
+def gen_corpus_for_iterator():
+    res_lines = []
+
+    dir_name = "res_bert_louvain_speed/"
+    dirs = os.listdir(dir_name)
+    for i in range(len(dirs)):
+        file = dir_name + dirs[i]
+        label = i + 561
+        for l_ in read_file(file):
+            res_lines.append(str(label) + "\t" + l_)
+    write_lines("data/ite_result.txt", res_lines)
+
+
 # process_ori_data()
 # bc = BertClient()
 # sent_to_vec()
 # get_tfidf_arr()
-# get_bert_train_test()
-get_bert_sent_vec()
+get_bert_train_test()
+# get_bert_sent_vec()
 # process_bank_ori_data()
+# gen_corpus_for_iterator()
