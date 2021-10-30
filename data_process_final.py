@@ -2,13 +2,13 @@
 
 from common import *
 import string
-from bert_serving.client import BertClient
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 import json
 import re
+import pandas as pd
 
 
 def process_ori_data():
@@ -41,12 +41,12 @@ def process_ori_data():
         file_w.write(i)
 
 
-def sent_to_vec():
-    with open_file("data/pure_questions.txt") as f:
-        lines = f.readlines()
-    lines = [line.strip() for line in lines]
-    bert_vecs = bc.encode(lines)
-    np.save("data/questions_vecs", bert_vecs)
+# def sent_to_vec():
+#     with open_file("data/pure_questions.txt") as f:
+#         lines = f.readlines()
+#     lines = [line.strip() for line in lines]
+#     bert_vecs = bc.encode(lines)
+#     np.save("data/questions_vecs", bert_vecs)
 
 
 def get_tfidf_arr():
@@ -83,26 +83,33 @@ def get_tfidf_arr():
 
 
 def get_bert_train_test():
-    lines_ = []
-    with open_file("data/ite_bank_result.txt") as f:
+    with open_file("data/bank_result.txt") as f:
         lines = f.readlines()
-    print(len(lines))
+    df = pd.read_excel('data/HE_test.xlsx')
+    # from sklearn.utils import shuffle
+    # df = shuffle(df)
+    # df = df.sample(frac=0.05, axis=0)
+
+    all_labels = list(set([line.strip().split("\t")[0] for line in lines] + df["category"].str.strip().values.tolist()))
+    # all_labels = list(set([line.strip().split("\t")[0] for line in lines]))
+    # all_labels = list(set(df["category"].str.strip().values.tolist()))
+    label_to_id = dict(zip(all_labels, range(len(all_labels))))
+    print(label_to_id)
+
+    lines_ = []
+    for i, row in df.iterrows():
+        lines_.append(str(label_to_id[row['category'].strip()]) + "\t" + row['data'].strip() + "\n")
     for line in lines:
-        if len(line.strip().split("\t")) == 4:
-            label, _, query, _ = line.strip().lower().split("\t")
-        elif len(line.strip().split("\t")) == 2:
-            label, query = line.strip().lower().split("\t")
-        else:
+        if len(line.strip().split("\t")) != 2:
             print(line)
-            continue
-        lines_.append(label + "\t" + query + "\n")
+        lines_.append(str(label_to_id[line.strip().split("\t")[0]]) + "\t" + line.strip().split("\t")[1].strip() + "\n")
     random_sample(lines_)
 
 
 def get_bert_sent_vec():
     bv_res = []
 
-    lines = read_file("data/bert_vecs.txt")
+    lines = read_file("data/test_bert_vecs.txt")
     for i in range(len(lines)):
         line = lines[i]
 
@@ -115,7 +122,7 @@ def get_bert_sent_vec():
     print(bv_res[0])
     print(len(bv_res[0]))
 
-    np.save("data/bert_arr", bv_res)
+    np.save("data/test_bert_arr", bv_res)
 
 
 def process_bank_ori_data():
@@ -146,7 +153,7 @@ def gen_corpus_for_iterator():
 # bc = BertClient()
 # sent_to_vec()
 # get_tfidf_arr()
-get_bert_train_test()
-# get_bert_sent_vec()
+# get_bert_train_test()
+get_bert_sent_vec()
 # process_bank_ori_data()
 # gen_corpus_for_iterator()

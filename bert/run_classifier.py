@@ -21,6 +21,8 @@ from __future__ import print_function
 import collections
 import csv
 import os
+import random
+
 import modeling
 import optimization
 import tokenization
@@ -242,7 +244,7 @@ class Comm100Processor(DataProcessor):
 
     def get_labels(self):
         """See base class."""
-        return [str(i) for i in range(366)]
+        return [str(i) for i in range(201)]
 
 
 class XnliProcessor(DataProcessor):
@@ -654,7 +656,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
         per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)
         loss = tf.reduce_mean(per_example_loss)
 
-        return (loss, per_example_loss, logits, probabilities)
+        return (loss, per_example_loss, logits, probabilities, output_layer)
 
 
 def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
@@ -681,7 +683,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
         is_training = (mode == tf.estimator.ModeKeys.TRAIN)
 
-        (total_loss, per_example_loss, logits, probabilities) = create_model(
+        (total_loss, per_example_loss, logits, probabilities, query_output) = create_model(
             bert_config, is_training, input_ids, input_mask, segment_ids, label_ids,
             num_labels, use_one_hot_embeddings)
 
@@ -742,7 +744,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         else:
             output_spec = tf.contrib.tpu.TPUEstimatorSpec(
                 mode=mode,
-                predictions={"probabilities": probabilities},
+                predictions={"probabilities": probabilities, "query_output": query_output},
                 scaffold_fn=scaffold_fn)
         return output_spec
 
@@ -1012,6 +1014,23 @@ def main(_):
                 writer.write(output_line)
                 num_written_lines += 1
         assert num_written_lines == num_actual_predict_examples
+
+    # bert模型导出
+    def serving_input_fn():
+        label_ids = tf.placeholder(tf.int32, [None], name='label_ids')
+        input_ids = tf.placeholder(tf.int32, [None, FLAGS.max_seq_length], name='input_ids')
+        input_mask = tf.placeholder(tf.int32, [None, FLAGS.max_seq_length], name='input_mask')
+        segment_ids = tf.placeholder(tf.int32, [None, FLAGS.max_seq_length], name='segment_ids')
+        input_fn = tf.estimator.export.build_raw_serving_input_receiver_fn({
+            'label_ids': label_ids,
+            'input_ids': input_ids,
+            'input_mask': input_mask,
+            'segment_ids': segment_ids,
+        })()
+        return input_fn
+
+    estimator._export_to_tpu = False
+    estimator.export_savedmodel('export', serving_input_fn)
 
 
 if __name__ == "__main__":

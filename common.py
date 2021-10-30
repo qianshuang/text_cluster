@@ -4,6 +4,7 @@ import heapq
 import os
 import numpy as np
 import random
+import datetime
 
 
 def open_file(filename, mode='r'):
@@ -22,6 +23,22 @@ def get_cos_similar(v1, v2):
     num = float(np.dot(v1, v2))  # 向量点乘
     denom = np.linalg.norm(v1) * np.linalg.norm(v2)  # 求模长的乘积
     return 0.5 + 0.5 * (num / denom) if denom != 0 else 0
+
+
+# 余弦距离矩阵：不允许负数出现
+def cos_distance_metric(vecs):
+    cos_dis_metric = np.zeros([len(vecs), len(vecs)])
+    for i in range(len(vecs)):
+        if i % 1000 == 0:
+            print(i, "is processing...")
+
+        cos_dis_metric[i][i] = 1
+
+        for j in range(i + 1, len(vecs)):
+            cos_dis = get_cos_similar(vecs[i], vecs[j])
+            cos_dis_metric[i][j] = cos_dis
+            cos_dis_metric[j][i] = cos_dis
+    return cos_dis_metric
 
 
 def n_largest(arr, n):
@@ -64,3 +81,7 @@ def write_lines(filename, list_res):
     test_w = open_file(filename, mode="w")
     for j in list_res:
         test_w.write(j + "\n")
+
+
+def time_cost(start):
+    return (datetime.datetime.now() - start).microseconds / 1000

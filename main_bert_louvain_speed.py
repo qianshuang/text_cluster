@@ -6,14 +6,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 simi_threshold = 0.9
 
-questions_vecs = np.load("data/bert_arr.npy")
-with open_file("data/pure_questions.txt") as f:
+questions_vecs = np.load("data/test_bert_arr.npy")
+with open_file("data/test_questions.txt") as f:
     pure_questions = f.readlines()
 
-G_ = collections.defaultdict(dict)
-
 print("cosine_similarity computing...")
-cos_simi_m = cosine_similarity(questions_vecs)
+# cos_simi_m = cosine_similarity(questions_vecs)
+cos_simi_m = cos_distance_metric(questions_vecs)
+
+G_ = collections.defaultdict(dict)
 
 print("graph building...")
 for i in range(len(questions_vecs)):

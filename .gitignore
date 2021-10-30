@@ -2,3 +2,6 @@
 __pycache__/
 data/
 bert/wwm_uncased_L-24_H-1024_A-16/
+.DS_Store
+export/
+res_bert_louvain_with_pak/
