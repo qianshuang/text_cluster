@@ -1,3 +1,5 @@
+louvain算法已过时，新的替代算法为leiden：https://github.com/vtraag/leidenalg
+
 data_process_final.py
     process_ori_data() --> 1. 清洗原始文件
     sent_to_vec() --> 2. 得到BERT句向量（这里直接使用原生bert模型，如果能标注几百条进行fine-tune，效果更好）
